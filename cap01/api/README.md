@@ -1,5 +1,5 @@
 ## 1. Servidor NodeJs com **`Framework Express`**
-  ![Código - Server Noje e Express](../.vscode/img/ServerNode.png) 
+  ![Código - Server Noje e Express](./../../.vscode/img/ServerNode.png) 
 
   * Instância o Express.
   * Excuta o Servidor na porta `3333`.
@@ -13,4 +13,3 @@
   npm install nodemon -D
 
 ```
-
