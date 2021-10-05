@@ -7,9 +7,12 @@
 
 
 
-## 2. Utilização da `Biblioteca Nodemon`
+## 2. Utilização da **`Biblioteca Nodemon`**
 
 ```bash
   npm install nodemon -D
-
 ```
+  * Aplicar leitura de código automática no Servidor.
+  * Deve-se configurar o scrip no package.json para executar a aplicação.
+  ![Scrip - Utilização do Nodemon](./../../.vscode/img/nodemon.png)
+  
