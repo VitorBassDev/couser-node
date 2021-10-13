@@ -17,6 +17,10 @@ app.use(express.json())
  * - Statement []
  */
 
+/** 
+ *** RN 02 - Validar Conta para buscar extrato bancário
+ */
+
 const customers = []
 
 app.post('/account', (request, response) => {
@@ -40,7 +44,7 @@ app.post('/account', (request, response) => {
    * REQ 01
    * PUSH - INSERE DADOS DENTRO DE UM ARRAY  
    **/
-
+''
   customers.push({
     cpf,
     name,
@@ -54,6 +58,31 @@ app.post('/account', (request, response) => {
       cpf
     }
   })
+})
+
+
+app.get('/statement', (request, response) =>{
+
+  /** 
+   * REQ 02 - Buscar Extrato Bancario de um Cliente Existente
+   * FIND = Busca e retorna o valor do Objeto
+   * HEADERS PARAM - CPF
+   **/ 
+
+ const {cpf} = request.headers
+
+ const customer = customers.find((customer) => customer.cpf === cpf)
+
+  /**
+    * RN 01 - Validar CPF existente
+    **/
+
+  if(!customer) {
+    return response.status(400).json({error: "Usuário não Encontrado"})  
+  }
+
+  return response.json(customer.statement)
+
 })
 
 app.listen(3333, () => {

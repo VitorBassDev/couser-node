@@ -26,8 +26,8 @@
 
 ### Regras de Negócio
   - [x] Não deve ser possível cadastrar uma conta com CPF já existente. (RN 01)
-  - Não deve ser possível realizar depósito em uma conta não existente.
   - Não deve ser possível buscar extrato em uma conta não existente.
-  - Não deve ser possível realizar saque em uma conta não existente.
+  - Não deve ser possível realizar depósito em uma conta não existente.
+    - Não deve ser possível realizar saque em uma conta não existente.
   - Não deve ser possível excluir uma conta não existente.
   - Não deve ser possível realizar saque quando o saldo for insuficiente.
