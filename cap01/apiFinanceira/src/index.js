@@ -5,24 +5,19 @@ const app = express()
 app.use(express.json())
 
 /** 
- *** RN 01 - Verificar CPF Existente
- */
-
-/** 
- *** REQ 01 - Criar Customer
+ *** REQ 01 - Criar uma conta de Customer
+ *** REQ 02 - Buscar o extrato da conte de um Customer
  * 
  * - CPF (String)
  * - Name (String)
  * - ID (UUID)
  * - Statement []
- */
-
-/** 
- *** RN 02 - Validar Conta para buscar extrato bancário
+ *  nnnnnnnnn
+ *** RN 01 - Verificar CPF existente
+ *** RN 02 - Verificar CPF existente para buscar extrato bancário
  */
 
 const customers = []
-
 
 // MIDDLWARE 
 function verifyIfExistsAccountCPF (request, response, next) {
@@ -85,7 +80,6 @@ app.post('/account', (request, response) => {
   })
 })
 
-
 app.get('/statement', verifyIfExistsAccountCPF, (request, response) =>{
 
   /** 
@@ -95,6 +89,33 @@ app.get('/statement', verifyIfExistsAccountCPF, (request, response) =>{
   const {customer} = request
   
   return response.json(customer.statement)
+
+})
+
+app.post('/deposit', verifyIfExistsAccountCPF, (request, response) =>{
+
+  /** 
+  * REQ 03 - Depositar na conta de um Custom
+  */
+
+  const {description, amount} = request.body
+
+  // MEDDLEWARE - VERIFICA SE A CONTA É VÁLIDA E RECUPERA AS INFORMAÇÕES DA CONTA
+  const {customer} = request
+
+  // INSERE A INFORMAÇÃO DO DEPÓSITO DENTRO DO STATEMENT
+  // PUSH - INSERE  OS DADOS DENTRO DO ARRAY
+  const statementOperation = {
+    description,
+    amount,
+    created_date: new Date(),
+    type: "credit"
+  }
+  
+  // 
+  customer.statement.push(statementOperation)
+
+  return response.status(201).json({message: "Depósito efetuado"})
 
 })
 
