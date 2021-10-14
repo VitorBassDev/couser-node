@@ -23,6 +23,31 @@ app.use(express.json())
 
 const customers = []
 
+
+// MIDDLWARE 
+function verifyIfExistsAccountCPF (request, response, next) {
+  
+  /**
+  * MEDDLEWARE
+  * FIND = Busca e retorna o valor do Objeto
+  * HEADERS PARAM - CPF
+  * RN 01 - Validar CPF existente
+  **/ 
+
+  const {cpf} = request.headers
+
+  const customer = customers.find((customer) => customer.cpf === cpf)
+ 
+  if(!customer) {
+    return response.status(400).json({error: "Usuário não Encontrado"})  
+  }
+
+  request.customer = customer
+
+  return next()
+  
+}
+
 app.post('/account', (request, response) => {
 
   const {cpf, name} = request.body
@@ -61,26 +86,14 @@ app.post('/account', (request, response) => {
 })
 
 
-app.get('/statement', (request, response) =>{
+app.get('/statement', verifyIfExistsAccountCPF, (request, response) =>{
 
   /** 
-   * REQ 02 - Buscar Extrato Bancario de um Cliente Existente
-   * FIND = Busca e retorna o valor do Objeto
-   * HEADERS PARAM - CPF
-   **/ 
+  * REQ 02 - Buscar Extrato Bancario de um Cliente Existente
+  */
 
- const {cpf} = request.headers
-
- const customer = customers.find((customer) => customer.cpf === cpf)
-
-  /**
-    * RN 01 - Validar CPF existente
-    **/
-
-  if(!customer) {
-    return response.status(400).json({error: "Usuário não Encontrado"})  
-  }
-
+  const {customer} = request
+  
   return response.json(customer.statement)
 
 })
