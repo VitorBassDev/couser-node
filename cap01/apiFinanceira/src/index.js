@@ -1,3 +1,4 @@
+const { request } = require('express')
 const express = require('express')
 const {v4: uuidv4} = require('uuid')
 const app = express()
@@ -7,6 +8,8 @@ app.use(express.json())
 /** 
  *** REQ 01 - Criar uma conta de Customer
  *** REQ 02 - Buscar o extrato da conte de um Customer
+ *** REQ 03 - Depositar na conta de um Customer
+ *** REQ 04 - Buscar o extrato da conte de um Customer Por Data
  * 
  * - CPF (String)
  * - Name (String)
@@ -95,7 +98,7 @@ app.get('/statement', verifyIfExistsAccountCPF, (request, response) =>{
 app.post('/deposit', verifyIfExistsAccountCPF, (request, response) =>{
 
   /** 
-  * REQ 03 - Depositar na conta de um Custom
+  * REQ 03 - Depositar na conta de um Custome
   */
 
   const {description, amount} = request.body
@@ -119,6 +122,108 @@ app.post('/deposit', verifyIfExistsAccountCPF, (request, response) =>{
 
 })
 
+app.post('/withdraw', verifyIfExistsAccountCPF, (request, response) =>{
+
+  const {amount} = request.body
+  const {customer} = request
+
+  const balance = getBalance(customer.statement)
+
+  if(balance < amount) {
+    return response.status(400).json({error: "Saldo Insuficiente"})
+  }
+
+  // INSERE A INFORMAÇÃO DO DEPÓSITO DENTRO DO STATEMENT
+  // PUSH - INSERE  OS DADOS DENTRO DO ARRAY
+  const statementOperation = {
+    amount,
+    created_date: new Date(),
+    type: "debit"
+  }
+  
+  // 
+  customer.statement.push(statementOperation)
+
+  return response.status(201).json({message: "Saque efetuado"})
+
+})
+
+app.get("/statement/date", verifyIfExistsAccountCPF, (request, response) =>{
+
+  /** 
+  * REQ 05 - Buscar Extrato Bancario de um Cliente Existente
+  */
+
+  const {customer} = request
+  const {date} = request.query
+  
+  // CONVERSÃO DE DATA
+  const dateFormat = new Date(date + " 00:00")
+
+  // FILTER = FILTRAGEM POR PARAMETRO E CONVERTER PARA O FORMATO 00/00/0000
+  const statement = customer.statement.filter(
+    (statement) =>
+      statement.created_at.toDateString() === 
+      new Date(dateFormat).toDateString()
+    )
+
+  return response.json(statement)
+
+})
+
+app.put("/account", verifyIfExistsAccountCPF, (request, response) =>{
+
+  /** 
+  - Ser possível atualizar os dados da conta do cliente. (REQ 06)
+  */
+
+  const {name} = request.body
+  const {customer} = request
+
+  customer.name = name;
+
+  return response.status(201).send()
+})
+
+app.get("/account", verifyIfExistsAccountCPF, (request, response) => {
+  
+  /**
+  - Ser possível obter dados da conta do cliente. (REQ 07)
+   */
+
+  const {customer} = request
+  return response.json(customer)
+
+})
+
+app.delete("/account", verifyIfExistsAccountCPF, (request, response) =>{
+  
+  /**
+   - Ser possível deletar uma conta.(REQ 08)
+   */
+  
+   const {customer} = request
+
+   // SPLICE = ESPERA UM ARRAY E REMOVE UMA POSSIÇÃO
+   customers.splice(customer, 1)
+
+   return response.status(200).json(customers)
+
+})
+
+app.get("/balance", verifyIfExistsAccountCPF, (request, response) =>{
+  
+  /**
+   - ser possível retornar o balanço da conta de um cliente. (REQ 09)
+   */
+  
+  const {customer} = request
+
+  const balance = getBalance(customer.statement)
+
+  return response.json(balance)
+})
+
 app.listen(3333, () => {
   console.log("Server On - API Financeira")
-})
+}) 

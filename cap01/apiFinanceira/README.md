@@ -18,9 +18,10 @@
   - Ser possível realizar um depósito.
   - Ser possível realizar um saque.
   - Ser possível buscar o extrato bancário de um cliente por data.
-  - Ser possível atualizar os dados da conta do cliente.
-  - Ser possível obter dados da conta do cliente.
-  - Ser possível deletar uma conta.
+  - Ser possível atualizar os dados da conta do cliente. (REQ 06)
+  - Ser possível obter dados da conta do cliente. (REQ 07)
+  - Ser possível deletar uma conta.(REQ 08)
+  - ser possível retornar o balanço da conta de um cliente. (REQ 09)
 
 ---
 
